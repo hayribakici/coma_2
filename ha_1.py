@@ -1,4 +1,5 @@
 
+import functools
 
 # Aufgabe 3 a
 
@@ -16,19 +17,28 @@ def lagrange(x, nodes, k):
     @returns: The value of the lagrange-polynome at the point x
     """
 
-    product = 1
-    for i, node in enumerate(nodes):
-        xk = 1 if i == k else 0
-        product *= ((x - node) / (xk - node))
+    return functools.reduce(lambda a, xi: a * (x - xi) / (nodes[k] - xi), nodes)
+
+    # Possible different way of writing this algorithm.
+    # product = 1
+    # for node in nodes:
+    #     product *= ((x - node) / (nodes[k] - node))
     
-    return product
+    # return product
 
 
 # Aufgabe 3 b
 
 def lagrange_interpolation(x, nodes, function_values):
-    # TODO implement me
-    pass
+    """
+    Calculates the lagrange-polynome ?
+    """
+    # we want to make sure our algorithm meets this condition
+    assert len(nodes) == len(function_values)
+    # TODO use indexed higher order function if possible
+    functools.
+    return functools.reduce(lambda a, b: a + b*lagrange(x, nodes,), function_values)
+
 
 # Aufgabe 3 c
 
