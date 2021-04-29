@@ -1,5 +1,9 @@
 
 import functools
+import itertools
+import math
+from matplotlib import pyplot as plt
+import numpy as np
 
 # Aufgabe 3 a
 
@@ -31,17 +35,82 @@ def lagrange(x, nodes, k):
 
 def lagrange_interpolation(x, nodes, function_values):
     """
-    Calculates the lagrange-polynome ?
+    Calculates the lagrange interpolation.
     """
     # we want to make sure our algorithm meets this condition
     assert len(nodes) == len(function_values)
-    # TODO use indexed higher order function if possible
-    functools.
-    return functools.reduce(lambda a, b: a + b*lagrange(x, nodes,), function_values)
+    
+    return functools.reduce(lambda a, b: a + b * lagrange(x, nodes, function_values.indexof(b)), function_values)
 
+    # sum = 0
+    # for k, value in enumerate(function_values):
+    #     sum += value * lagrange(x, nodes, k)
+    
+    # return sum
 
 # Aufgabe 3 c
 
-def plot():
-    # TODO implement me
-    pass
+def plot(n):
+    """
+    Plots in a grid of n rows
+    """
+    rowspan = 2
+    colspan = 3
+    for i in range(1, (n + 1)):
+        print(str(i) + " " + str(i - 1) + " " + str((i - 1) * rowspan))
+        subplot = plt.subplot2grid(((n * 2) + 1, colspan), ((i - 1) * rowspan, 0), rowspan=rowspan, colspan=colspan)
+        x = _get_supporting_points(i)
+        y = _get_function_values(math.sin, i)
+        subplot.plot(x, y)
+        # subplot.xlabel('x')
+        # subplot.xlabel('y')
+        subplot.set_title('for n = ' + str(i))
+    plt.tight_layout()
+    plt.show()
+
+
+def _get_function_values(function, n):
+    """
+    Calculates the function values for given supporting points.
+
+    @param function: any function that has an input paramter and that calculates something e.g. sin(x)
+    @param n: the number of supporting points.
+    
+    @return: a list of function values calculated from the supporting points
+
+    @see _get_supporting_points(n)
+    """
+    return map(lambda item: function(item), _get_supporting_points(n))
+
+    # Possible different way of the same algorithm:
+
+    # supporting_points = _get_supporting_points(n)
+    # function_values = []
+    # for item in supporting_points:
+    #   function_values.append(function(item))
+    # return function_values
+
+
+def _get_supporting_points(n):
+    """
+    @type k: int
+    @type n: int
+
+    @rtype: list
+    @return: a list of supporting points with k * pi / n with k = 0...n
+    """
+    # since k has the range from 0 ... n, the range to n + 1 is necessary
+    # otherwise it would go from 0 ... n - 1
+    list = [k for k in range(n + 1)] # equals [0, 1, 2, ..., n]
+
+    return map(lambda item: (item * math.pi) / n, list)
+
+    # Possible different way of the same algorithm:
+
+    # new_list = []
+    # for item in list:
+    #   new_list.append((item * pi) / n)
+    # return new_list
+
+
+plot(n=4)
