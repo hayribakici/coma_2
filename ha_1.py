@@ -9,26 +9,28 @@ import numpy as np
 
 def lagrange(x, nodes, k):
     """
-    Calculates the lagrange-polynome.
+    Calculates the k-th lagrange-polynome for a given x.
 
     @type x: float
     @param x: the x value
+    @type nodes: list
     @param nodes: a list of supporting points
     @type k: int
     @param k: the k-th lagrange polynome to calculate
 
     @rtype: float
-    @returns: The value of the lagrange-polynome at the point x
+    @returns: The value of the k-th lagrange-polynome at the point x
     """
 
-    # return functools.reduce(lambda a, xi: a * (x - xi) / (nodes[k] - xi), nodes)
-
-    # Possible different way of writing this algorithm.
-    # TODO this throws an exception when nodes[k] - node = 0
-    # looks like nodes[k] (or the x_k to be exact) is a different number
     product = 1
-    for node in nodes:
-        product *= ((x - node) / (nodes[k] - node))
+    xk = nodes[k]
+
+    for i, node in enumerate(nodes):
+        if i == k:
+            # we skip this loop-step to make sure,
+            # that the denominator of the fraction below never becomes 0
+            continue
+        product *= ((x - node) / (xk - node))
     
     return product
 
@@ -37,55 +39,82 @@ def lagrange(x, nodes, k):
 
 def lagrange_interpolation(x, nodes, function_values):
     """
-    Calculates the lagrange interpolation.
+    Calculates the lagrange interpolation for each given function value.
+
+    @param x: the x value
+    @type x: float
+    @param nodes: a list of supporting points
+    @type nodes: list
+    @param function_values: a list of function values, that have been calculated for each supporting points.
+                            note, that len(nodes) == len(function_values) must be true
+    @type function_values: list
+
+    @rtype: float
+    @return the result of the formula of the lagrange-iterpolation algorithm. 
     """
     # we want to make sure our algorithm meets this condition
     assert len(nodes) == len(function_values)
     
-    # return functools.reduce(lambda a, b: a + b * lagrange(x, nodes, function_values.index(b)), function_values)
+    return functools.reduce(lambda a, b: a + (b * lagrange(x, nodes, function_values.index(b))), function_values)
 
-    sum = 0
-    for k, value in enumerate(function_values):
-        sum += (value * lagrange(x, nodes, k))
+    # more verbose way of writing this algorithm without a reduce function
+    # sum = 0
+    # for k, value in enumerate(function_values):
+    #     sum += (value * lagrange(x, nodes, k))
     
-    return sum
+    # return sum
 
 # Aufgabe 3 c
 
 def plot(n):
     """
-    Plots in a grid of n rows
+    Plots graphs for given supporting points 1...n
     """
-
-
     rowspan = 2
     colspan = 3
-    x = np.arange(0, math.pi, 0.02)
-    y = map(lambda item: lagrange_interpolation(item, _get_supporting_points(n), _get_function_values(math.sin, n)), x)
-    plt.plot(x, y)
 
-    # TODO uncomment when above code workds
-    # for i in range(1, (n + 1)):
-    #     subplot = plt.subplot2grid(((n * 2) + 1, colspan), ((i - 1) * rowspan, 0), rowspan=rowspan, colspan=colspan)
-    #     y = map(lambda item: lagrange_interpolation(item, _get_supporting_points(i), _get_function_values(math.sin, i)), x)
-    #     subplot.plot(x, y)
-    #     subplot.set_title('for n = ' + str(i))
-    # plt.tight_layout()
+    x = np.arange(0, math.pi, 0.02)
+    for i in range(1, (n + 1)):
+        # we want to arrange different subplots listed on top of each other. One plot for n = 1, one for n = 2, ...
+        subplot = plt.subplot2grid(((n * 2) + 1, colspan), ((i - 1) * rowspan, 0), rowspan=rowspan, colspan=colspan)
+        
+        # since the calculation of the function values already need the list of supporting points, we
+        # return the supporting points and their function values.
+        # Therefore we make use of the tuple data structure here, because we don't want 
+        # to call _getsupporting_points twice 
+        # when calling the langrange_interpolation function.
+        tuple_points = _get_supporting_points_and_function_values(math.sin, i)
+        supporting_points = tuple_points[0]
+        function_values = tuple_points[1]
+        y = map(lambda xi: lagrange_interpolation(xi, supporting_points, function_values), x)
+
+        # Possible equivalent implementation of this algorithm
+        # y = []
+        # tuple_points = _get_supporting_points_and_function_values(math.sin, n)
+        # supporting_points = tuple_points[0]
+        # function_values = tuple_points[1]
+        # for xi in x:
+        #     y.append(lagrange_interpolation(xi, supporting_points, function_values))
+
+        subplot.plot(x, y)
+        subplot.set_title('Plot for n = ' + str(i))
+    plt.tight_layout()
     plt.show()
 
 
-def _get_function_values(function, n):
+def _get_supporting_points_and_function_values(function, n):
     """
-    Calculates the function values for given supporting points.
+    Calculates the supporting points and their function values for given supporting points.
 
     @param function: any function that has an input paramter and that calculates something e.g. sin(x)
     @param n: the number of supporting points.
     
-    @return: a list of function values calculated from the supporting points
+    @return: a tuple containing two lists. The first entry is a list of supporting points, the second entry maps a function for each supporting point.
 
     @see _get_supporting_points(n)
     """
-    return map(lambda item: function(item), _get_supporting_points(n))
+    supporting_points = _get_supporting_points(n)
+    return (supporting_points, map(lambda xi: function(xi), supporting_points))
 
     # Possible different way of the same algorithm:
 
@@ -93,12 +122,11 @@ def _get_function_values(function, n):
     # function_values = []
     # for item in supporting_points:
     #   function_values.append(function(item))
-    # return function_values
+    # return (supporting_points, function_values)
 
 
 def _get_supporting_points(n):
     """
-    @type k: int
     @type n: int
 
     @rtype: list
