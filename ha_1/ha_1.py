@@ -85,7 +85,7 @@ def plot(n):
         tuple_points = _get_supporting_points_and_function_values(math.sin, i)
         supporting_points = tuple_points[0]
         function_values = tuple_points[1]
-        y = map(lambda xi: lagrange_interpolation(xi, supporting_points, function_values), x)
+        y = list(map(lambda xi: lagrange_interpolation(xi, supporting_points, function_values), x))
 
         # Possible equivalent implementation of this algorithm
         # y = []
@@ -113,7 +113,7 @@ def _get_supporting_points_and_function_values(function, n):
     @see _get_supporting_points(n)
     """
     supporting_points = _get_supporting_points(n)
-    return (supporting_points, map(lambda xi: function(xi), supporting_points))
+    return (supporting_points, list(map(lambda xi: function(xi), supporting_points)))
 
     # Possible different way of the same algorithm:
 
@@ -135,7 +135,7 @@ def _get_supporting_points(n):
     # otherwise it would go from 0 ... n - 1
     mylist = [k for k in range(n + 1)] # equals [0, 1, 2, ..., n]
 
-    return map(lambda item: (item * math.pi) / n, mylist)
+    return list(map(lambda item: (item * math.pi) / n, mylist))
 
     # Possible different way of the same algorithm:
 
