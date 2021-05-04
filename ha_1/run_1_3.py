@@ -44,8 +44,10 @@ def lagrange_interpolation(x, nodes, function_values):
     @type x: float
     @param nodes: a list of supporting points
     @type nodes: list
-    @param function_values: a list of function values, that have been calculated for each supporting points.
-                            note, that len(nodes) == len(function_values) must be true
+    @param function_values: a list of function values, that have been 
+                            calculated for each supporting points.
+                            Note, that len(nodes) == len(function_values)
+                            must be true
     @type function_values: list
 
     @rtype: float
@@ -54,7 +56,10 @@ def lagrange_interpolation(x, nodes, function_values):
     # we want to make sure our algorithm meets this condition
     assert len(nodes) == len(function_values)
     
-    return functools.reduce(lambda a, b: a + (b * lagrange(x, nodes, function_values.index(b))), function_values)
+    return functools.reduce(lambda a, b: a + (b * lagrange(x, 
+                                                    nodes,
+                                                    function_values.index(b))
+                                             ), function_values)
 
     # more verbose way of writing this algorithm without a reduce function
     # sum = 0
@@ -75,17 +80,24 @@ def plot(n):
     x = np.arange(0, math.pi, 0.02)
     for i in range(1, (n + 1)):
         # we want to arrange different subplots listed on top of each other. One plot for n = 1, one for n = 2, ...
-        subplot = plt.subplot2grid(((n * 2) + 1, colspan), ((i - 1) * rowspan, 0), rowspan=rowspan, colspan=colspan)
+        subplot = plt.subplot2grid(((n * 2) + 1, colspan),
+                                    ((i - 1) * rowspan, 0),
+                                    rowspan,
+                                    colspan)
         
-        # since the calculation of the function values already need the list of supporting points, we
-        # return the supporting points and their function values.
-        # Therefore we make use of the tuple data structure here, because we don't want 
-        # to call _getsupporting_points twice 
+        # since the calculation of the function values already need the 
+        # list of supporting points, we return the 
+        # supporting points and their function values.
+        # Therefore we make use of the tuple data structure here,
+        # because we don't want to call _getsupporting_points() twice 
         # when calling the langrange_interpolation function.
         tuple_points = _get_supporting_points_and_function_values(math.sin, i)
         supporting_points = tuple_points[0]
         function_values = tuple_points[1]
-        y = list(map(lambda xi: lagrange_interpolation(xi, supporting_points, function_values), x))
+        y = list(map(lambda xi: lagrange_interpolation(xi, 
+                                    supporting_points, 
+                                    function_values
+                                ), x))
 
         # Possible equivalent implementation of this algorithm
         # y = []
@@ -93,7 +105,9 @@ def plot(n):
         # supporting_points = tuple_points[0]
         # function_values = tuple_points[1]
         # for xi in x:
-        #     y.append(lagrange_interpolation(xi, supporting_points, function_values))
+        #     y.append(lagrange_interpolation(xi, 
+        #                           supporting_points,
+        #                           function_values))
 
         subplot.plot(x, y)
         subplot.set_title('Plot for n = ' + str(i))
@@ -103,17 +117,24 @@ def plot(n):
 
 def _get_supporting_points_and_function_values(function, n):
     """
-    Calculates the supporting points and their function values for given supporting points.
+    Calculates the supporting points and their 
+    function values for given supporting points.
 
-    @param function: any function that has an input paramter and that calculates something e.g. sin(x)
+    @param function: any function that has an input 
+                    paramter and that calculates something 
+                    e.g. sin(x)
     @param n: the number of supporting points.
     
-    @return: a tuple containing two lists. The first entry is a list of supporting points, the second entry maps a function for each supporting point.
+    @return: a tuple containing two lists. The first entry is
+            a list of supporting points, the second
+            entry maps a function for each supporting point.
 
     @see _get_supporting_points(n)
     """
     supporting_points = _get_supporting_points(n)
-    return (supporting_points, list(map(lambda xi: function(xi), supporting_points)))
+    return (supporting_points, list(map(lambda xi: 
+                                    function(xi), 
+                                    supporting_points)))
 
     # Possible different way of the same algorithm:
 
@@ -129,7 +150,8 @@ def _get_supporting_points(n):
     @type n: int
 
     @rtype: list
-    @return: a list of supporting points with k * pi / n with k = 0...n
+    @return: a list of supporting points 
+    with k * pi / n with k = 0...n
     """
     # since k has the range from 0 ... n, the range to n + 1 is necessary
     # otherwise it would go from 0 ... n - 1
