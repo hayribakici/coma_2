@@ -23,7 +23,7 @@ def lagrange(x, nodes, k):
 
     product = 1
     xk = nodes[k]
-
+    
     for i, node in enumerate(nodes):
         if i == k:
             # we skip this loop-step to make sure,
@@ -74,17 +74,14 @@ def plot(n):
     """
     Plots graphs for given supporting points 1...n
     """
-    rowspan = 2
-    colspan = 3
+    rowspan = 4
+    colspan = 1
 
     x = np.arange(0, math.pi, 0.02)
     for i in range(1, (n + 1)):
         # we want to arrange different subplots listed on top of each other. One plot for n = 1, one for n = 2, ...
-        subplot = plt.subplot2grid(((n * 2) + 1, colspan),
-                                    ((i - 1) * rowspan, 0),
-                                    rowspan,
-                                    colspan)
-        
+        subplot = plt.subplot(rowspan, colspan, i)
+
         # since the calculation of the function values already need the 
         # list of supporting points, we return the 
         # supporting points and their function values.
@@ -94,6 +91,7 @@ def plot(n):
         tuple_points = _get_supporting_points_and_function_values(math.sin, i)
         supporting_points = tuple_points[0]
         function_values = tuple_points[1]
+        
         y = list(map(lambda xi: lagrange_interpolation(xi, 
                                     supporting_points, 
                                     function_values
@@ -108,10 +106,10 @@ def plot(n):
         #     y.append(lagrange_interpolation(xi, 
         #                           supporting_points,
         #                           function_values))
-
-        subplot.plot(x, y)
+        
+        subplot.plot(x, y, color="blue")
+        subplot.plot(x, [math.sin(xi) for xi in x], color="red")
         subplot.set_title('Plot for n = ' + str(i))
-    plt.tight_layout()
     plt.show()
 
 
