@@ -79,7 +79,8 @@ def plot(n):
 
     x = np.arange(0, math.pi, 0.02)
     for i in range(1, (n + 1)):
-        # we want to arrange different subplots listed on top of each other. One plot for n = 1, one for n = 2, ...
+        # we want to arrange different subplots listed on top of each other. 
+        # One plot for n = 1, one for n = 2, ...
         subplot = plt.subplot(rowspan, colspan, i)
 
         # since the calculation of the function values already need the 
