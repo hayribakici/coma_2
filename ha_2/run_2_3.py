@@ -5,9 +5,7 @@ import numpy as np
 def difference_quotient(h, function, x):
     if h == 0:
         return 0
-    log = (math.log(x + h) - math.log(x)) / h
-    print(log)
-    return log
+    return (function(x + h) - function(x)) / h
 
 
 def aitken_neville(x, function, nodes):
