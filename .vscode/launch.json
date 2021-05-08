@@ -1,12 +1,12 @@
 {
-    "version": "0.0.1",
-    "configurations": [
-        {
-            "name": "Coma II Lecture",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
-        }
-    ]
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Python current file",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    }
+  ]
 }
