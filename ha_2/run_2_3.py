@@ -27,10 +27,11 @@ def _aitken_neville(i, k, x, x_, function, nodes):
     
 
 def test():
-    nodes = [0.2, 0.4, 0.6] #np.arange(0, 1, 0.2)
+    nodes = [0.2, 0.4] #np.arange(0, 1, 0.2)
     print(aitken_neville(0, 1, math.log, nodes))
     # TODO what to when we add another node?
-    # nodes.append(0.6)
-    # print(_aitken_neville(len(nodes) - 2, len(nodes) - 1, math.log, 0, nodes))
+    print('----------')
+    nodes.append(0.6)
+    print(_aitken_neville(0, len(nodes) - 1, 0, 1, math.log,nodes))
 
 test()
