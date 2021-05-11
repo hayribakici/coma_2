@@ -23,7 +23,7 @@ class AitkenNeville():
         self._x = x
         self._xs = xs
 
-    def __difference_quotient(self, h):
+    def difference_quotient(self, h):
         if h == 0:
             return 0
         return (self._function(self._xs + h) - self._function(self._xs)) / h
@@ -48,8 +48,6 @@ class AitkenNeville():
         results = self.results
         x = self._x
 
-        # [p_00, p_11, p_01, p_22, p_12, p_02,     p_33, p_23, p_13, p_03]
-        # p_12 = .... P_(1+1),2 - p_1,(2-1)
         # We want to fill the results dictionary as with its polynome values as follows:
         # {
         #   0: [p00], 
@@ -77,13 +75,32 @@ class AitkenNeville():
                 p2 = (x - xk) * results[k - 1][(len(results[k - 1]) - 1) - i]
 
                 # putting everythin together
-                results[k].append(frac * (p1 - p2))    
+                results[k].append(frac * (p1 - p2))
 
-def test():
-    longbottom = AitkenNeville(math.log, 0, 1)
-    nodes = np.arange(1, 0, -0.2)
-    for node in nodes:
-        longbottom.add_node(node)
-        print(longbottom.results)
+def f_3(x): 
+    gamma = 10000
+    return (1 / gamma) * math.atan(gamma * x)
 
-test()
+def test(n):
+    x_ = 0
+    nodes =  np.linspace(math.pi / 2, 0, 40) 
+
+
+    # 1. f'(x)
+    a = AitkenNeville(lambda x: 1 + math.sin(x), 0, 0)
+    
+    error_wo_extra = abs(math.cos(x_) - a.difference_quotient(nodes[0]))
+
+    print(error_wo_extra)
+
+    # for i in range(n):    
+
+        # a = AitkenNeville(lambda x: 1 + math.sin(x), 0, 0)
+        
+        # b = AitkenNeville(lambda x: math.sqrt(x**3), 0, 0)
+
+        # c = AitkenNeville(f_3, 0, 0)
+    
+
+
+test(n=40)
