@@ -18,7 +18,7 @@ class AitkenNeville():
         @type xs: float
         """
         self._nodes = []
-        self.results = {}
+        self._results = {}
         self._function = function
         self._x = x
         self._xs = xs
@@ -27,6 +27,12 @@ class AitkenNeville():
         if h == 0:
             return 0
         return (self._function(self._xs + h) - self._function(self._xs)) / h
+
+    def add_nodes(self, nodes):
+        lenBefore = len(self._nodes)
+        self._nodes.extend(nodes)
+
+        self._aitken(lenBefore)
 
     def add_node(self, node):
         """
@@ -40,12 +46,15 @@ class AitkenNeville():
         if self._nodes and min(self._nodes) < node:
             raise ValueError("New node must be smaller than the rest")
 
-        nodes = self._nodes
         lenBefore = len(self._nodes)
         
-        nodes.append(node)
+        self._nodes.append(node)
+        self._aitken(lenBefore)
 
-        results = self.results
+       
+    def _aitken(self, lenBefore):
+        nodes = self._nodes
+        results = self._results
         x = self._x
 
         # We want to fill the results dictionary as with its polynome values as follows:
@@ -63,7 +72,7 @@ class AitkenNeville():
             # we count backwards: from k to 0.
             for i in range(k, -1, -1):
                 if i == k:
-                    results[k].append(self.__difference_quotient(h=nodes[k]))
+                    results[k].append(self.difference_quotient(h=nodes[k]))
                     continue
 
                 xi = nodes[i]
@@ -77,22 +86,42 @@ class AitkenNeville():
                 # putting everythin together
                 results[k].append(frac * (p1 - p2))
 
+
+    def get_polynome(self, n): 
+        """
+        @param n: the n-th polynome to retrieve.
+        @return ... TODO
+        """
+        polynome = len(self._results[n]) - 1
+        return self._results[n][polynome]
+
 def f_3(x): 
     gamma = 10000
     return (1 / gamma) * math.atan(gamma * x)
 
 def test(n):
     x_ = 0
-    nodes =  np.linspace(math.pi / 2, 0, 40) 
+    H = math.pi / 2
+
+    
+    nodes_1 = _get_supporting_points(n, lambda k: 2**(-k) * H)
+    nodes_2 = _get_supporting_points(n, lambda k: H / (k + 1)) # have length of n
+
 
 
     # 1. f'(x)
     a = AitkenNeville(lambda x: 1 + math.sin(x), 0, 0)
-    
-    error_wo_extra = abs(math.cos(x_) - a.difference_quotient(nodes[0]))
+    a.add_nodes(nodes_1)
+    pn = a.get_polynome(n)
 
+    error_wo_extra = abs(math.cos(x_) - a.difference_quotient(nodes_1[len(nodes_1) - 1]))
+    error_w_extra = abs(math.cos(x_) - pn)
     print(error_wo_extra)
+    print(error_w_extra)
 
+
+    # n = 1, ..., 40
+    # hk = 2^-k * pi / 2, k = 0, ..., n
     # for i in range(n):    
 
         # a = AitkenNeville(lambda x: 1 + math.sin(x), 0, 0)
@@ -101,6 +130,11 @@ def test(n):
 
         # c = AitkenNeville(f_3, 0, 0)
     
+def _get_supporting_points(n, function):
+    mylist = []
+    for k in range(n + 1): # 0, ..., n
+        mylist.append(function(k))
 
+    return mylist
 
 test(n=40)
