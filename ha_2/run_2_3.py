@@ -1,7 +1,8 @@
 import math
 from matplotlib import pyplot as plt
 import numpy as np
-
+import inspect
+import sympy as sym
 
 class AitkenNeville():
     """
@@ -24,6 +25,9 @@ class AitkenNeville():
         self._xs = xs
 
     def difference_quotient(self, h):
+        """
+        Calculates the difference quotient for a given h.
+        """
         if h == 0:
             return 0
         return (self._function(self._xs + h) - self._function(self._xs)) / h
@@ -58,7 +62,6 @@ class AitkenNeville():
         
         self._nodes.append(node)
         self.__aitken(lenBefore)
-
        
     def __aitken(self, lenBefore):
         """
@@ -68,7 +71,7 @@ class AitkenNeville():
         results = self._results
         x = self._x
 
-        # We want to fill the results dictionary as with its polynome values as follows:
+        # We want to fill the results dictionary with its polynome values as follows:
         # {
         #   0: [p00], 
         #   1: [p11, p01], 
@@ -109,44 +112,83 @@ class AitkenNeville():
         polynome = len(self._results[n]) - 1
         return self._results[n][polynome]
 
+class Coma2Function():
+    """
+    Helper class.
+    """
+
+    def __init__(self, pretty, f, ddxpretty, ddxf):
+        self.pretty_function = pretty
+        self.function = f
+        self.ddx_pretty = ddxpretty
+        self.ddxfunction = ddxf
 
 class Test():
-
-    def __init__(self, n):
+    def __init__(self, n, xs):
         self._n = n
-        self._x = 0
-        self._H = math.pi / 2
-        self._functions = [lambda x: 1 + math.sin(x), lambda x: math.sqrt(x**3), self.f_3]
-        self._derived_functions = [lambda x: math.cos(x), lambda x: 1.5 * math.sqrt(x), lambda x: 1/(100000000* x**2 + 1)]
+        self._xs = xs
+        self._H = sym.pi / 2
+        self.k = sym.Symbol('k')
+        self._functions =  [Coma2Function("1 + sin(x)", lambda xs: 1 + math.sin(xs), "cos(x)", lambda xs: math.cos(xs)),
+                            Coma2Function("sqrt(x^3)", lambda xs: math.sqrt(xs**3), "3 * sqrt(x) / 2", lambda xs: 1.5 * math.sqrt(xs)),
+                            Coma2Function("1/10000 * atan(10000 * x)", self.f_3, "1/(100000000 * x^2 + 1)", lambda xs: 1/(100000000 * xs**2 + 1))]
+        self._node_functions = [2 ** (-self.k) * self._H, self._H / (self.k + 1)]
+        
 
     def f_3(self, x): 
         gamma = 10000
         return (1 / gamma) * math.atan(gamma * x)
 
-    def calculate(self):
+    def calculate_errors(self):
+        """
+        Calculates the error with and without extrapolation for each n.
+        """
         n = self._n
-        x_ = self._x
-        H = self._H
+        x_ = self._xs
+        functions = self._functions
         
 
         for i in range(1, n + 1):
-            nodes = self.__get_supporting_points(i, )
-            self.__calculate(i, )
+            print("======================= n =", i, "=======================")
+            print("")
 
-    def __calculate(self, i, nodes):
-        functions = self._functions
-        derived_functions = self._derived_functions
+            for f in functions:
 
-        hn = self.__hn(nodes)
-        for f in functions:
-            neville = AitkenNeville(f, 0, 0)
-            neville.add_nodes(nodes)
-                
-            dx = neville.difference_quotient(hn)
+                for node_function in self._node_functions:
+                    print("Current nodes:", node_function)
+                    nodes = self.__get_supporting_points(i, sym.lambdify(self.k, node_function))
+                    hn = self.__hn(nodes)
 
+                    print("Calculating errors for function ", f.pretty_function)
+                    neville = AitkenNeville(f.function, 0, self._xs)
+                    neville.add_nodes(nodes)
+                        
+                    derived = f.ddxfunction
 
+                    dq = neville.difference_quotient(hn)
+                    print("|", f.ddx_pretty, " - D(", hn, ")| =", self.__get_error(derived, x_, dq))
+                    print("")
+                    
+                    pn = neville.get_polynome(i)
+                    print("|", f.ddx_pretty, " - p_", i, "| =", self.__get_error(derived, x_, pn))
+                    print("")
 
-            pn = neville.get_polynome(i)
+        print("Hallo Lenni!")
+        print("")
+        print("Leider war uns die Aufgabenstellung nicht klar genug, sodass wir dir")
+        print("noch zeitgerecht schreiben konnten.")
+        print("")
+        print("Uns war nicht klar, ob wir die Stützstellen h_k mit wachsendem n (von 1, ..., 40)")
+        print("behandeln sollen (das würden dann insgesamt 40 plot machen!!) oder einfach")
+        print("mit jedem n = n + 1 eine neue Stützselle berechnet und den Algorithmus gefüttert")
+        print("werden muss (das Zweite würde eher Sinn machen). Sollte dies sein, so stellten wir")
+        print("uns die weitere Frage, wie das überhaupt geplottet werden soll?")
+        print("Besser gesagt, wie sollen die Fehler mit/ohne Extrapolation dargestellt werden?")
+        print("Sorry, dass wir nur eine halbgare Lösung abgegeben haben, ich hoffe wir bekommen")
+        print("trotzdem eine faire Punktzahl.")
+        print("")
+        print("Viele Grüße")
+        print("Monia, Jan und Hayri")
 
 
     def __get_supporting_points(self, n, function): 
@@ -179,15 +221,9 @@ class Test():
         """
         return abs(derived_function(x) - value)
 
-    # 1. f'(x)
-    a = AitkenNeville(lambda x: 1 + math.sin(x), 0, 0)
-    a.add_nodes(nodes_1)
-    pn = a.get_polynome(n)
+def main():
+    test = Test(n=40, xs=0)
+    test.calculate_errors()
 
-    error_wo_extra = abs(math.cos(x_) - a.difference_quotient(nodes_1[len(nodes_1) - 1]))
-    error_w_extra = abs(math.cos(x_) - pn)
-    print(error_wo_extra)
-    print(error_w_extra)
-    
-
-test(n=40)
+if __name__ == "__main__":
+    main()
