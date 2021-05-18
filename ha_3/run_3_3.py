@@ -25,7 +25,7 @@ def _get_supporting_point(i, a, b, n):
         raise ValueError("i must be < n")
     return a + ((i * (b - a)) / n)
 
-def max_norm(n, values, a, b):
+def max_norm(values):
     return max(values)
 
 def _get_function_values(function, nodes):
@@ -35,8 +35,32 @@ def _get_function_values(function, nodes):
 
 # Interpolation functions
 
-def _calc_coefficients(n, function, nodes):
-    pass
+def _calc_coefficients(function, nodes):
+
+    # We want to fill the results dictionary with its polynome values as follows:
+    # {
+    #   0: y0 = [D00]
+    #   1: y1 = [D01, D10]
+    #   2: y2 = [D02, D11, D20]
+    #   3: y3 = [D03, D12, D21 D30]
+    #   4: y4 = [D04, D13, D22, D31, D40]
+    #   5: ...
+    # }
+
+    coeff_helper = {}
+    coefficients = []
+    for i, node in enumerate(nodes):
+        coeff_helper[i].append(function(node))
+        
+        for k in range(i):
+            coeff_helper[i].append((coeff_helper[i - 1][k] - coeff_helper[i][k]) / (nodes[i - k - 1] - node)) 
+        
+        coefficients.append(coeff_helper[i][len(coeff_helper[i]) - 1])
+    
+    return coefficients
+    
+
+
 
 def newton_interpolation(x, coeff, nodes):
     """
@@ -44,7 +68,7 @@ def newton_interpolation(x, coeff, nodes):
     nodes.
     """
     result = coeff[0]
-    for i in range(1, len(nodes)):
+    for i in range(1, len(coeff)):
         result += coeff[i] * functools.reduce(lambda a, b: (x - a) * (x - b), nodes[slice(i - 1)])
 
     return result
