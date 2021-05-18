@@ -1,13 +1,16 @@
 
 from enum import Enum
+from matplotlib import pyplot as plt
+
 import math
-import numpy as num
+import numpy as np
 import functools
 
 f1 = lambda x: math.e ** x
 f2 = lambda x: (x ** 2) / (1 + x ** 2)
-f3 = lambda x: num.sign(x) * x ** 2
-f4 = lambda x: num.sign(x) * x ** 3
+f3 = lambda x: np.sign(x) * x ** 2
+f4 = lambda x: np.sign(x) * x ** 3
+functions = [f1, f2, f3, f4]
 
 def _get_supporting_points(a, b, n):
     """
@@ -31,8 +34,16 @@ def max_norm(values):
 def _get_function_values(function, nodes):
     return list(map(lambda xi: function(xi), nodes))
 
-
-
+def plot(a, b, n, interpolation_type):
+    x = np.arange(a, b, 0.02) 
+    
+    l = []
+    
+    nodes = _get_supporting_points(a, b, 1)
+        
+    f1(node) - newton(.., f1, nodes)
+    
+        
 # Interpolation functions
 
 def _calc_coefficients(function, nodes):
@@ -48,6 +59,7 @@ def _calc_coefficients(function, nodes):
     # }
 
     coeff_helper = {}
+    # holds the last element of each list: [D00, D10, D20, D30, D40, ...]
     coefficients = []
     for i, node in enumerate(nodes):
         coeff_helper[i].append(function(node))
@@ -58,9 +70,6 @@ def _calc_coefficients(function, nodes):
         coefficients.append(coeff_helper[i][len(coeff_helper[i]) - 1])
     
     return coefficients
-    
-
-
 
 def newton_interpolation(x, coeff, nodes):
     """
@@ -73,7 +82,8 @@ def newton_interpolation(x, coeff, nodes):
 
     return result
 
-# Copied from run_1_3.py 
+def newton(x, function, nodes):
+    return newton_interpolation(x, _calc_coefficients(function, nodes), nodes)
 
 def lagrange(x, nodes, k):
     """
@@ -130,3 +140,6 @@ def lagrange_interpolation(x, nodes, function_values):
 class InterpolationType(Enum):
     LAGRANGE = 1,
     NEWTON = 2
+
+
+plot(-5, 5, 1, InterpolationType.NEWTON)
