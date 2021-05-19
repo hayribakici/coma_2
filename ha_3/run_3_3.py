@@ -1,7 +1,7 @@
 
 from enum import Enum
 from matplotlib import pyplot as plt
-
+import sys
 import math
 import numpy as np
 import functools
@@ -28,21 +28,53 @@ def _get_supporting_point(i, a, b, n):
         raise ValueError("i must be < n")
     return a + ((i * (b - a)) / n)
 
-def max_norm(values):
-    return max(values)
+def max_norm(function, a, b, nodes):
+    n = 1000
+    results = []
+    for i in range(n + 1):
+        x = _get_supporting_point(i, a, b, n)
+        results.append((x, abs(function(x) - newton(x, function, nodes))))
 
-def _get_function_values(function, nodes):
-    return list(map(lambda xi: function(xi), nodes))
+    return myMax(results)
 
-def plot(a, b, n, interpolation_type):
-    x = np.arange(a, b, 0.02) 
+
+def myMax(iterable):
+    mrMax = -10000000000000000000
+    maxItem = None
+    for item in iterable:
+        if item[1] > mrMax:
+            mrMax = item[1]
+            maxItem = item
+
+    return maxItem
+
+def plot(a, b, n):
+    values = []
+    for k in range(1, n + 1): 
+        xvalues = _get_supporting_points(a, b, k)
+        values.append(max_norm(f1, a, b, xvalues))
+
+    plt.plot(list(map(lambda item: item[0], values)), list(map(lambda item: item[1], values)))
+    plt.show()
     
-    l = []
+def plotf():
+    rowspan = 4
+    colspan = 1
+    x = np.arange(-5, 5, 0.02)
+
+    for i, f in enumerate(functions):
+        # we want to arrange different subplots listed on top of each other. 
+        # One plot for n = 1, one for n = 2, ...
+        subplot = plt.subplot(rowspan, colspan, i + 1)
+
+        supporting_points = _get_supporting_points(-5, 5, 10)
     
-    nodes = _get_supporting_points(a, b, 1)
-        
-    f1(node) - newton(.., f1, nodes)
+        newtonY = list(map(lambda xi: newton(xi, f, supporting_points), x))
     
+        subplot.plot(x, newtonY, color="blue")
+        subplot.plot(x, [f(xi) for xi in x], color="red")
+        subplot.set_title('Plot functions[' + str(i) + ']')
+    plt.show()
         
 # Interpolation functions
 
@@ -62,6 +94,7 @@ def _calc_coefficients(function, nodes):
     # holds the last element of each list: [D00, D10, D20, D30, D40, ...]
     coefficients = []
     for i, node in enumerate(nodes):
+        coeff_helper[i] = []
         coeff_helper[i].append(function(node))
         
         for k in range(i):
@@ -78,8 +111,10 @@ def newton_interpolation(x, coeff, nodes):
     """
     result = coeff[0]
     for i in range(1, len(coeff)):
-        result += coeff[i] * functools.reduce(lambda a, b: (x - a) * (x - b), nodes[slice(i - 1)])
-
+        product = coeff[i]
+        for k in range(i):
+            product *= (x - nodes[k])
+        result += product
     return result
 
 def newton(x, function, nodes):
@@ -141,5 +176,4 @@ class InterpolationType(Enum):
     LAGRANGE = 1,
     NEWTON = 2
 
-
-plot(-5, 5, 1, InterpolationType.NEWTON)
+plot(-5, 5, 50)
