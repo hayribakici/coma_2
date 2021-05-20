@@ -1,7 +1,7 @@
 
 from enum import Enum
 from matplotlib import pyplot as plt
-import sys
+
 import math
 import numpy as np
 import functools
@@ -28,35 +28,33 @@ def _get_supporting_point(i, a, b, n):
         raise ValueError("i must be < n")
     return a + ((i * (b - a)) / n)
 
-def max_norm(function, a, b, nodes):
+def max_norm(function, interpolator, a, b, nodes):
     n = 1000
     results = []
     for i in range(n + 1):
         x = _get_supporting_point(i, a, b, n)
-        results.append((x, abs(function(x) - newton(x, function, nodes))))
+        results.append(abs(function(x) - interpolator(x, function, nodes)))
+    return max(results)
 
-    return myMax(results)
-
-
-def myMax(iterable):
-    mrMax = -10000000000000000000
-    maxItem = None
-    for item in iterable:
-        if item[1] > mrMax:
-            mrMax = item[1]
-            maxItem = item
-
-    return maxItem
-
-def plot(a, b, n):
-    values = []
+def plot(a, b, n, interpolator_type):
+    max_norms = []
+    x = []
     for k in range(1, n + 1): 
-        xvalues = _get_supporting_points(a, b, k)
-        values.append(max_norm(f1, a, b, xvalues))
+        x.append(k)
+        nodes = _get_supporting_points(a, b, k)
+        interpolator = None
+        
+        if interpolator_type == InterpolationType.NEWTON:
+            interpolator = newton
+        else:
+            interpolator = lagrange
+        
+        max_norms.append(max_norm(f4, interpolator, a, b, nodes))
 
-    plt.plot(list(map(lambda item: item[0], values)), list(map(lambda item: item[1], values)))
+    plt.plot(x, [f3(xi) for xi in x], color="blue")
+    plt.plot(x, max_norm)
     plt.show()
-    
+
 def plotf():
     rowspan = 4
     colspan = 1
@@ -104,7 +102,7 @@ def _calc_coefficients(function, nodes):
     
     return coefficients
 
-def newton_interpolation(x, coeff, nodes):
+def _newton_interpolation(x, coeff, nodes):
     """
     Calculates the Newton Polynome interpolation at a point x with given coefficiants and
     nodes.
@@ -118,9 +116,9 @@ def newton_interpolation(x, coeff, nodes):
     return result
 
 def newton(x, function, nodes):
-    return newton_interpolation(x, _calc_coefficients(function, nodes), nodes)
+    return _newton_interpolation(x, _calc_coefficients(function, nodes), nodes)
 
-def lagrange(x, nodes, k):
+def _lagrange_k(x, nodes, k):
     """
     Calculates the k-th lagrange-polynome for a given x.
 
@@ -147,7 +145,7 @@ def lagrange(x, nodes, k):
     
     return product
 
-def lagrange_interpolation(x, nodes, function_values):
+def lagrange(x, function, nodes):
     """
     Calculates the lagrange interpolation for each given function value.
 
@@ -155,19 +153,14 @@ def lagrange_interpolation(x, nodes, function_values):
     @type x: float
     @param nodes: a list of supporting points
     @type nodes: list
-    @param function_values: a list of function values, that have been 
-                            calculated for each supporting points.
-                            Note, that len(nodes) == len(function_values)
-                            must be true
-    @type function_values: list
+    @param function: the function to apply to the nodes on
 
     @rtype: float
     @return the result of the formula of the lagrange-iterpolation algorithm. 
     """
-    # we want to make sure our algorithm meets this condition
-    assert len(nodes) == len(function_values)
+    function_values = [function(node) for node in nodes]
     
-    return functools.reduce(lambda a, b: a + (b * lagrange(x, 
+    return functools.reduce(lambda a, b: a + (b * _lagrange_k(x, 
                                                     nodes,
                                                     function_values.index(b))
                                              ), function_values)
@@ -176,4 +169,4 @@ class InterpolationType(Enum):
     LAGRANGE = 1,
     NEWTON = 2
 
-plot(-5, 5, 50)
+plot(-5, 5, 10, InterpolationType.NEWTON)
