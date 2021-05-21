@@ -115,6 +115,46 @@ def make_plot(I, f, n, q, c):
 
     plt.plot(x, y, c, label='q=%s' % q) 
 
+def _plot_riemann_intervall():
+    # from https://www.math.ubc.ca/~pwalls/math-python/integration/riemann-sums/
+    f = f1
+    a = 0; b = 1; N = 7
+    n = 10*N+1 # Use n*N+1 points to plot the function smoothly
+
+    x = np.linspace(a,b,N+1)
+    y = f(x)
+
+    X = np.linspace(a,b,n*N+1)
+    Y = f(X)
+
+    plt.figure(figsize=(15,5))
+
+    plt.subplot(1,3,1)
+    plt.plot(X,Y,'b')
+    x_left = x[:-1] # Left endpoints
+    y_left = y[:-1]
+    plt.plot(x_left,y_left,'b.',markersize=10)
+    plt.bar(x_left,y_left,width=(b-a)/N,alpha=0.2,align='edge',edgecolor='b')
+    plt.title('Linke Riemann-Summe, n= {}'.format(N))
+
+    plt.subplot(1,3,2)
+    plt.plot(X,Y,'b')
+    x_mid = (x[:-1] + x[1:])/2 # Midpoints
+    y_mid = f(x_mid)
+    plt.plot(x_mid,y_mid,'b.',markersize=10)
+    plt.bar(x_mid,y_mid,width=(b-a)/N,alpha=0.2,edgecolor='b')
+    plt.title('Mittlere Riemann-Summe, n = {}'.format(N))
+
+    plt.subplot(1,3,3)
+    plt.plot(X,Y,'b')
+    x_right = x[1:] # Right endpoints
+    y_right = y[1:]
+    plt.plot(x_right,y_right,'b.',markersize=10)
+    plt.bar(x_right,y_right,width=-(b-a)/N,alpha=0.2,align='edge',edgecolor='b')
+    plt.title('Rechte Riemann-Summe, n = {}'.format(N))
+
+    #plt.show()
+
 I = (0, 1)
 n = 500
 # q = 0 für left-points
@@ -122,10 +162,15 @@ n = 500
 
 make_plot(I, f1, n, 0, 'r')
 make_plot(I, f1, n, 0.5, 'b')
+make_plot(I, f1, n, 1, 'g')
 
 plt.xscale("log")
 plt.grid(which='both')
 plt.title('Fehler der Riemann-Summe für\n left-points(q=0) und mid-points(q=0.5)')
 plt.legend()
 plt.xlabel('n=%i (logarithmische Skala)' %n)
+
+_plot_riemann_intervall()
+
 plt.show()
+
