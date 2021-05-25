@@ -55,7 +55,7 @@ def _get_value_of_trapez_regel(I, f):
     for i in range(0, len(I)-1):
         a = I[i]
         b = I[i+1]
-        S += (b - a) * ((f(a) + f(b))/2)
+        S += (b - a) * ((f(a) + f(b)) / 2)
         A += 2
 
     return (S,A)
@@ -64,10 +64,10 @@ def _get_value_of_simpson_regel(I, f):
     S = 0
     A = 0
 
-    for i in range(0, len(I)-1):
+    for i in range(0, len(I) - 1):
         a = I[i]
-        b = I[i+1]
-        S += ((b - a)/6) * (f(a) + 4*f((b+a)/2) + f(b))
+        b = I[i + 1]
+        S += ((b - a) / 6) * (f(a) + 4 * f((b + a) / 2) + f(b))
         A += 3
 
     return (S,A)
@@ -80,7 +80,10 @@ def _get_value_of_weddle_regel(I, f):
         a = I[i]
         b = I[i+1]
         h = (b-a)/6
-        S += ((b - a)/840) * (41*f(a+(0*h)) + 216*f(a+(1*h)) + 27*f(a+(2*h)) + 272*f(a+(3*h)) + 27*f(a+(4*h)) + 216*f(a+(5*h)) + 41*f(a+(6*h)))
+        S += (((b - a)  /840) * (41 * f(a + (0 * h)) 
+        + 216 * f(a + (1 * h)) + 27 * f(a + (2 * h)) 
+        + 272 * f(a + (3 * h)) + 27 * f(a + (4 * h)) 
+        + 216 * f(a +(5 * h)) + 41 * f(a + (6 * h))))
         A += 7
 
     return (S,A)
@@ -147,8 +150,8 @@ a1 = 0
 b1 = math.pi
 
 # Variablen für Plot-window √x+ sin(21πx)
-f2 = lambda x: math.sqrt(x) + math.sin(21*math.pi*x)
-I_f2_0_1 = (2/21)*(7+(1/math.pi))
+f2 = lambda x: math.sqrt(x) + math.sin(21 * math.pi * x)
+I_f2_0_1 = (2 / 21) * (7 + (1 / math.pi))
 a2 = 0
 b2 = 1
 
