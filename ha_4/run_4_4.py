@@ -54,8 +54,8 @@ def _get_xi_k_values(list, q):
     """
     qv = []
 
-    for i in range(len(list)-1):
-        qv.append(list[i]+q*(list[i+1]-list[i]))
+    for i in range(len(list) - 1):
+        qv.append(list[i] + q * (list[i + 1]  - list[i]))
     
     return qv
 
@@ -76,7 +76,7 @@ def _get_sum(f, x, q):
     result = 0
 
     for i in range(len(q)):
-        result += f(q[i])*(x[i+1]-x[i])
+        result += f(q[i]) * (x[i + 1] - x[i])
 
     return result
 
@@ -104,14 +104,16 @@ def _make_plot_list_with_riemann_failure(I, f, n, q):
     for i in x:
         # Fehler der Riemann-Summe in Bezug zum Vergleichswert
         # 0.5*scipy.special.erf(1)*math.sqrt(math.pi) 
-        y.append(riemann(I, f, i, q)-0.5*special.erf(1)*math.sqrt(math.pi))
+        y.append(riemann(I, f, i, q) - 0.5 * special.erf(1) * math.sqrt(math.pi))
     
     return (x, y)
 
 def make_plot(I, f, n, q, c):
 
-    x = _make_plot_list_with_riemann_failure(I, f, n, q)[0]
-    y = _make_plot_list_with_riemann_failure(I, f, n, q)[1]
+    plotlist = _make_plot_list_with_riemann_failure(I, f, n, q)
+    
+    x = plotlist[0]
+    y = plotlist[1]
 
     plt.plot(x, y, c, label='q=%s' % q) 
 
