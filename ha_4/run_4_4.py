@@ -162,7 +162,7 @@ n = 500
 
 make_plot(I, f1, n, 0, 'r')
 make_plot(I, f1, n, 0.5, 'b')
-make_plot(I, f1, n, 1, 'g')
+make_plot(I, f1, n, 1, '--g')
 
 plt.xscale("log")
 plt.grid(which='both')
