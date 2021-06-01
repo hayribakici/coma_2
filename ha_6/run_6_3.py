@@ -26,7 +26,7 @@ plt.loglog(xvalues, yvalues02, 'r', label='x~_0 = 1001')
 
 plt.legend()
 plt.xlabel('Anzahl t-Werte = %i (logarithmische Skala)' % T_)
-plt.ylabel('f(t) \n(logarithmische Skala)')
+plt.ylabel('x(t) \n(logarithmische Skala)')
 
 plt.subplot(2,1,2)
 # Graf für |x(t) - x~(t)|
