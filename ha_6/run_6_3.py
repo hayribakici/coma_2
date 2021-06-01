@@ -25,15 +25,15 @@ plt.loglog(xvalues, yvalues01, 'b', label='x_0 = 1')
 plt.loglog(xvalues, yvalues02, 'r', label='x~_0 = 1001')
 
 plt.legend()
-plt.xlabel('Anzahl x-Werte = %i (logarithmische Skala)' % T_)
-plt.ylabel('f(x) \n(logarithmische Skala)')
+plt.xlabel('Anzahl t-Werte = %i (logarithmische Skala)' % T_)
+plt.ylabel('f(t) \n(logarithmische Skala)')
 
 plt.subplot(2,1,2)
 # Graf für |x(t) - x~(t)|
 plt.loglog(xvalues, error, label='|x(t) - x~(t)|')
 
 plt.legend()
-plt.xlabel('Anzahl x-Werte = %i (logarithmische Skala)' % T_)
+plt.xlabel('Anzahl t-Werte = %i (logarithmische Skala)' % T_)
 plt.ylabel('errors \n(logarithmische Skala)')
 
 plt.tight_layout()
