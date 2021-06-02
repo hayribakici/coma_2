@@ -125,6 +125,7 @@ def make_plot(a, b, f, k, n, Ivalue, c, s, t):
     y2 = []
 
     for i in x:
+        # snc ist eine Liste von Tupeln (S, A) mit S = Quadraturwert und A = f-Auswertungen
         snc = summed_newton_cotes(a, b, f, k, i)
         y.append(abs(Ivalue - snc[0]))
         y2.append(snc[1])
@@ -132,15 +133,24 @@ def make_plot(a, b, f, k, n, Ivalue, c, s, t):
     if s == 1:
         plt.subplot(2,1,s)
         plt.loglog(x, y, c, label='k=%s' % k) 
+        plt.xlabel('n=%i (doppelte logarithmische Skala)' % n)
+        plt.ylabel('Quadraturfehler')
         
     if s == 2:
         plt.subplot(2,1,s)
-        plt.loglog(x, y2, c+'.', label='k=%s' % k)
+        # geplottet werden die f-Auswertungen über den Quadraturfehler
+        # y2 = f-Auswertungen an der Stelle n (A(n))
+        # y = Quadraturfehler an der Stelle n (S(n))
+        # zur bessern Darstellung wird y2 auf der x-Achse abgebildet und
+        # y auf der y-Achse
+        plt.loglog(y2, y, c+'.', label='k=%s' % k)
+        plt.xlabel('f-Auswertungen')
+        plt.ylabel('Quadraturfehler')
 
     plt.tight_layout()
     plt.title(t)
     plt.legend()
-    plt.xlabel('n=%i (doppelte logarithmische Skala)' % n)
+    
 
 
 # Variablen für Plot-window sin(x)
@@ -157,7 +167,7 @@ b2 = 1
 
 n = 1000
 
-plt.figure('Aufgabe 3b) Plot für sin(x)')
+plt.figure('Aufgabe 3b) Plots für sin(x)')
 # b) Fehlerkurve mit n = 1, ..., 1000 für f(x) = sin(x)
 # doppelt logarithmisch dargestellt
 text = 'Fehlerkurve im Intervall [0, π].'
@@ -165,13 +175,13 @@ make_plot(a1, b1, f1, 1, n, I_f1_0_Pi, 'b', 1, text)
 make_plot(a1, b1, f1, 2, n, I_f1_0_Pi, 'r', 1, text)
 make_plot(a1, b1, f1, 6, n, I_f1_0_Pi, 'g', 1, text)
 
-text = 'Anzahl der f-Auswertungen im Intervall [0, π].'
+text = 'Quadrturfehler in Abhängigkeit der f-Auswertugen an der Stelle n'
 make_plot(a1, b1, f1, 1, n, I_f1_0_Pi, 'b', 2, text)
 make_plot(a1, b1, f1, 2, n, I_f1_0_Pi, 'r', 2, text)
 make_plot(a1, b1, f1, 6, n, I_f1_0_Pi, 'g', 2, text)
 
 
-plt.figure('Aufgabe 3c) Plot für √x+ sin(21πx)')
+plt.figure('Aufgabe 3c) Plots für √x+ sin(21πx)')
 # c) Fehlerkurve mit n = 1, ..., 1000 für 
 # doppelt logarithmisch dargestellt
 
@@ -180,7 +190,7 @@ make_plot(a2, b2, f2, 1, n, I_f2_0_1, 'b', 1, text)
 make_plot(a2, b2, f2, 2, n, I_f2_0_1, 'r', 1, text)
 make_plot(a2, b2, f2, 6, n, I_f2_0_1, 'g', 1, text)
 
-text = 'Anzahl der f-Auswertungen im Intervall [0, 1].'
+text = 'Quadrturfehler in Abhängigkeit der f-Auswertugen an der Stelle n'
 make_plot(a2, b2, f2, 1, n, I_f2_0_1, 'b', 2, text)
 make_plot(a2, b2, f2, 2, n, I_f2_0_1, 'r', 2, text)
 make_plot(a2, b2, f2, 6, n, I_f2_0_1, 'g', 2, text)
