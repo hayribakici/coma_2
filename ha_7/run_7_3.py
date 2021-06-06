@@ -125,18 +125,34 @@ def make_plot(A, f, x0, T, n, c, method, sp):
 
         if n == 120:
             test = _get_test_fkt(testFkt, plotlist)
-            plt.loglog(*zip(*test), '-y', label='Vergleichskurve n = %i' % n)
+            plt.loglog(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
 
         plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
         plt.ylabel('Näherungswerte')
         plt.title('Explizites Eulerverfahren')
         plt.legend()
+
+    if sp == 0 and method == 'i':
+        plotlist = implicitEuler(A, f, x0, T, n)
+        plt.yscale('symlog')
+        plt.semilogx(*zip(*plotlist), c, label='n = %i' % n)
+
+        if n == 120:
+            test = _get_test_fkt(testFkt, plotlist)
+            plt.yscale('symlog')
+            plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
+
+        plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
+        plt.ylabel('Näherungswerte')
+        plt.title('Implizites Eulerverfahren mit symlog der y-Achse und semilogx der x-Achse')
+        plt.legend()
     
-    if method == 'i':
+    if sp > 0 and method == 'i':
         plotlist = implicitEuler(A, f, x0, T, n)
         if sp == 1:
             plt.subplot(3,1,sp)
-            plt.plot(*zip(*plotlist), c, label='n = %i' % n)
+            plt.yscale('symlog')
+            plt.semilogx(*zip(*plotlist), c, label='n = %i' % n)
             plt.title('Implizites Eulerverfahren mit n = %i' % n)
             plt.legend()
             plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
@@ -144,7 +160,8 @@ def make_plot(A, f, x0, T, n, c, method, sp):
 
         if sp == 2:
             plt.subplot(3,1,sp)
-            plt.plot(*zip(*plotlist), c, label='n = %i' % n)
+            plt.yscale('symlog')
+            plt.semilogx(*zip(*plotlist), c, label='n = %i' % n)
             plt.title('Implizites Eulerverfahren mit n = %i' % n)
             plt.legend()
             plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
@@ -153,11 +170,14 @@ def make_plot(A, f, x0, T, n, c, method, sp):
         if n == 120:
             test = _get_test_fkt(testFkt, plotlist)
             plt.subplot(3,1,3)
-            plt.plot(*zip(*test), '-y', label='Vergleichskurve n = %i' % n)
+            plt.yscale('symlog')
+            plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
             plt.title('Vergleichskurve mit n = %i' % n)
             plt.legend()
 
         plt.tight_layout()
+
+        
         
 
 A = 16
@@ -187,5 +207,16 @@ make_plot(A, f, x0, T, n, '-b', 'i', 1)
 # Implizites Eulerverfahren mit n = 120
 n = 120
 make_plot(A, f, x0, T, n, '-g', 'i', 2)
+
+# Test eines gemeinsamen Plots für implizites Eulerverfahren
+plt.figure('Aufgabe 3b) Plots für das implizite Eulerverfahren mit f(t) = t (Testplot)')
+
+# Implizites Eulerverfahren mit n = 60
+n = 60
+make_plot(A, f, x0, T, n, '-b', 'i', 0)
+
+# Implizites Eulerverfahren mit n = 120
+n = 120
+make_plot(A, f, x0, T, n, '-g', 'i', 0)
 
 plt.show()
