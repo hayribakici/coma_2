@@ -5,7 +5,7 @@ import numpy as np
 
 T = 10
 # zum Zeichnen einer schöneren
-T_ = 100*T
+T_ = 100 * T
 # Startwerte: 
 # x_0 = 1 und x~_0 = 1001
 
@@ -18,7 +18,7 @@ yvalues02 = list(map(lambda t: math.exp(2 * t) * (1001 + t**2), xvalues))
 # Berechnung der y-Werte für den Fehler |x(t) - x~(t)| 
 error = list(map(lambda x, y: abs(x - y), yvalues01, yvalues02))
 
-plt.figure('Aufgabe 3b): e^(2t) * (x_0 + t^2)')
+plt.figure('Aufgabe 3b): e^(2t) ⋅ (x_0 + t²)')
 plt.subplot(2,1,1)
 # Grafen für x und x~
 plt.loglog(xvalues, yvalues01, 'b', label='x_0 = 1')
