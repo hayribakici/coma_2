@@ -43,12 +43,12 @@ def explicitEuler(A, f, x0, T, n):
     # Liste mit Startwert
     result = [(0,x0)]
 
-    h = _get_Schrittweite(T, n)
+    tau = _get_Schrittweite(T, n)
 
-    for i in range(0, n):
+    for i in range(n):
         tk = result[i][0]
         xk = result[i][1]
-        result.append(((tk + h), (xk + h * (A * xk + f(tk)))))
+        result.append(((tk + tau), (xk + tau * (A * xk + f(tk)))))
 
     return result
 
@@ -89,12 +89,12 @@ def implicitEuler(A, f, x0, T, n):
     # Liste mit Startwert
     result = [(0,x0)]
 
-    h = _get_Schrittweite(T, n)
+    tau = _get_Schrittweite(T, n)
 
     for i in range(n):
-        tk = result[i][0] + h
+        tk = result[i][0] + tau # == t_{k + 1}
         xk = result[i][1]
-        result.append((tk, (xk + h * f(tk)) / (1 - h * A)))
+        result.append((tk, (xk + tau * f(tk)) / (1 - tau * A)))
 
     return result
 
@@ -134,22 +134,22 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
         plt.ylabel('Näherungswerte')
         plt.title('Explizites Eulerverfahren')
 
-    if plot_position == PlotPosition.NONE and method_type == MethodType.IMPLICIT:
+    elif method_type == MethodType.IMPLICIT:
         plotlist = implicitEuler(A, f, x0, T, n)
-        plt.yscale('symlog')
-        plt.semilogx(*zip(*plotlist), color, label='n = %i' % n)
 
-        if n == 120:
-            test = _get_test_fkt(testFkt, plotlist)
+        if plot_position == PlotPosition.NONE:
+            plotlist = implicitEuler(A, f, x0, T, n)
             plt.yscale('symlog')
-            plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
+            plt.semilogx(*zip(*plotlist), color, label='n = %i' % n)
 
-        plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
-        plt.ylabel('Naeherungswerte')
-        plt.title('Implizites Eulerverfahren mit symlog der y-Achse und semilogx der x-Achse')
-    
-    if not plot_position == PlotPosition.NONE and method_type == MethodType.IMPLICIT:
-        plotlist = implicitEuler(A, f, x0, T, n)
+            if n == 120:
+                test = _get_test_fkt(testFkt, plotlist)
+                plt.yscale('symlog')
+                plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
+
+            plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
+            plt.ylabel('Näherungswerte')
+            plt.title('Implizites Eulerverfahren mit symlog der y-Achse und semilogx der x-Achse')
 
         if plot_position == PlotPosition.TOP:
             plt.subplot(3, 1, plot_position)
@@ -157,7 +157,7 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
             plt.semilogx(*zip(*plotlist), color, label='n = %i' % n)
             plt.title('Implizites Eulerverfahren mit n = %i' % n)
             plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
-            plt.ylabel('Naeherungswerte')
+            plt.ylabel('Näherungswerte')
 
         if plot_position == PlotPosition.CENTER:
             plt.subplot(3, 1, plot_position)
@@ -167,21 +167,21 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
             plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
             plt.ylabel('Näherungswerte')
 
-        if n == 120:
-            test = _get_test_fkt(testFkt, plotlist)
-            plt.subplot(3, 1, plot_position)
-            plt.yscale('symlog')
-            plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
-            plt.title('Vergleichskurve mit n = %i' % n)
+            if n == 120:
+                test = _get_test_fkt(testFkt, plotlist)
+                plt.subplot(3, 1, plot_position)
+                plt.yscale('symlog')
+                plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
+                plt.title('Vergleichskurve mit n = %i' % n)
 
-        plt.tight_layout()
+            plt.tight_layout()
     plt.legend()
 
 class MethodType(Enum):
     IMPLICIT = 0,
     EXPLICIT = 1
         
-# Using IntEnum to represent a restricted (0, ..., 3) int-type
+# Using IntEnum to represent a restricted (from 0, ..., 3) int-type
 class PlotPosition(IntEnum):
     """
     Position of the plot.
