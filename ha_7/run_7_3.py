@@ -120,11 +120,11 @@ def make_plot(A, f, x0, T, n, c, method, sp):
     if method == 'e':
         plotlist = explicitEuler(A, f, x0, T, n)
 
-        plt.loglog(zip(plotlist), c, label='n = %i' % n)
+        plt.loglog(*zip(*plotlist), c, label='n = %i' % n)
 
         if n == 120:
             test = _get_test_fkt(testFkt, plotlist)
-            plt.loglog(zip(test), '-r', label='Vergleichskurve n = %i' % n)
+            plt.loglog(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
 
         plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
         plt.ylabel('Naeherungswerte')
@@ -134,7 +134,7 @@ def make_plot(A, f, x0, T, n, c, method, sp):
     if sp == 0 and method == 'i':
         plotlist = implicitEuler(A, f, x0, T, n)
         plt.yscale('symlog')
-        plt.semilogx(zip(plotlist), c, label='n = %i' % n)
+        plt.semilogx(*zip(*plotlist), c, label='n = %i' % n)
 
         if n == 120:
             test = _get_test_fkt(testFkt, plotlist)
