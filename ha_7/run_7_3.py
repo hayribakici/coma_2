@@ -52,11 +52,6 @@ def explicitEuler(A, f, x0, T, n):
 
     return result
 
-# TODO
-# Zur Vorgehensweise: Die gegebene Funktion aus dem Skript (3.38) Seite 29 
-# muss nach x_{k+1} aufgeloest werden. Fuer n=60 sieht der Naeherungsgraf so aus, 
-# wie auf dem Bild im Skript, aber fuer n=120 ist es sehr abenteuerlich und mit 
-# loglog oder semilogy gar nicht richtig darzustellen. Ich nehme an, der Graf sieht aehnlich wie fuer n=60 aus...
 # Aufgabenteil b)
 def implicitEuler(A, f, x0, T, n):
     """
