@@ -21,7 +21,7 @@ def _get_test_fkt(f, list):
 # Aufgabenteil a)
 def explicitEuler(A, f, x0, T, n):
     """
-        Löst ein AWP mittels des expliziten Euler-Verfahrens aus der VL:
+        Loest ein AWP mittels des expliziten Euler-Verfahrens aus der VL:
         x_{k + 1} = x_k + τ(λx_k + f(t_k)),  mit k= 0,...,n - 1
 
         Parameter:
@@ -32,12 +32,12 @@ def explicitEuler(A, f, x0, T, n):
         @type x0:   int ? float
         @param T:   Schrittweite τ := T / n
         @type T:    float
-        @param n:   Anzahl der Euler-Auswertungen (Notwendig für T)
+        @param n:   Anzahl der Euler-Auswertungen (Notwendig fuer T)
         @type n:    int
 
         @rtype:     [tupel] 
         @return:    Gibt eine Liste von Vektoren aller Iterierten als x ∈ ℝ^{n + 1} 
-                    (inklusive Startwert) zurück
+                    (inklusive Startwert) zurueck
     """
 
     # Liste mit Startwert
@@ -52,31 +52,26 @@ def explicitEuler(A, f, x0, T, n):
 
     return result
 
-# TODO
-# Zur Vorgehensweise: Die gegebene Funktion aus dem Skript (3.38) Seite 29 
-# muss nach x_{k+1} aufgelöst werden. Für n=60 sieht der Näherungsgraf so aus, 
-# wie auf dem Bild im Skript, aber für n=120 ist es sehr abenteuerlich und mit 
-# loglog oder semilogy gar nicht richtig darzustellen. Ich nehme an, der Graf sieht ähnlich wie für n=60 aus...
 # Aufgabenteil b)
 def implicitEuler(A, f, x0, T, n):
     """
         Loest ein AWP mittels des impliziten Euler-Verfahrens aus der VL:
         x_{k + 1} = x_k + τ (λx_{k + 1} + f(t_{k + 1})),  mit k= 0,...,n - 1
 
-        Um x_{k+1} in Abhängigkeit von x_{k+1} berechnen zu können, muss
-        die Gleichung nach x_{k+1} aufgelöst werden
+        Um x_{k+1} in Abhaengigkeit von x_{k+1} berechnen zu koennen, muss
+        die Gleichung nach x_{k+1} aufgeloest werden
 
         => x_{k+1} = (x_k + tau ⋅ f(t_{k + 1})) / (1 - τ ⋅ λ)
 
         Parameter:
         @param A:   λ = A
         @type A:    int
-        @param f:   Funktion über die Iteriert wird: x'(t) = λx(t) + f(t)
+        @param f:   Funktion ueber die Iteriert wird: x'(t) = λx(t) + f(t)
         @param x0:  Startwert
         @type x0:   int ? float
         @param T:   Schrittweite τ := T / n
         @type T:    float
-        @param n:   Anzahl der Euler-Auswertungen (Notwendig für T)
+        @param n:   Anzahl der Euler-Auswertungen (Notwendig fuer T)
         @type n:    int
 
 
@@ -106,14 +101,14 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
         Parameter:
         @param A:       λ = A
         @type A:        int
-        @param f:       Funktion über die Iteriert wird: x'(t) = λx(t) + f(t)
+        @param f:       Funktion ueber die Iteriert wird: x'(t) = λx(t) + f(t)
         @param x0:      Startwert
         @type x0:       int ? float
         @param T:       Schrittweite τ := T / n
         @type T:        float
-        @param n:       Anzahl der Euler-Auswertungen (Notwendig für T)
+        @param n:       Anzahl der Euler-Auswertungen (Notwendig fuer T)
         @type n:        int
-        @param c:       Farbe für den entsprechenden Grafen
+        @param c:       Farbe fuer den entsprechenden Grafen
         @type c:        string
         @param method:  EXPLICIT fuer explicit, IMPLICIT fuer implicit
         @type method:   MethodType
@@ -131,7 +126,7 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
             plt.loglog(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
 
         plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
-        plt.ylabel('Näherungswerte')
+        plt.ylabel('Naeherungswerte')
         plt.title('Explizites Eulerverfahren')
 
     elif method_type == MethodType.IMPLICIT:
@@ -148,7 +143,7 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
                 plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
 
             plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
-            plt.ylabel('Näherungswerte')
+            plt.ylabel('Naeherungswerte')
             plt.title('Implizites Eulerverfahren mit symlog der y-Achse und semilogx der x-Achse')
 
         if plot_position == PlotPosition.TOP:
@@ -156,20 +151,20 @@ def make_plot(A, f, x0, T, n, color, method_type, plot_position):
             plt.yscale('symlog')
             plt.semilogx(*zip(*plotlist), color, label='n = %i' % n)
             plt.title('Implizites Eulerverfahren mit n = %i' % n)
-            plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
-            plt.ylabel('Näherungswerte')
+            plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
+            plt.ylabel('Naeherungswerte')
 
         if plot_position == PlotPosition.CENTER:
             plt.subplot(3, 1, plot_position)
             plt.yscale('symlog')
             plt.semilogx(*zip(*plotlist), color, label='n = %i' % n)
             plt.title('Implizites Eulerverfahren mit n = %i' % n)
-            plt.xlabel('Anzahl der x-Werte in Abhängigkeit von n und der Schrittweite T/n (T = %i).' % T)
-            plt.ylabel('Näherungswerte')
+            plt.xlabel('Anzahl der x-Werte in Abhaengigkeit von n und der Schrittweite T/n (T = %i).' % T)
+            plt.ylabel('Naeherungswerte')
 
             if n == 120:
                 test = _get_test_fkt(testFkt, plotlist)
-                plt.subplot(3, 1, plot_position)
+                plt.subplot(3, 1, 3)
                 plt.yscale('symlog')
                 plt.semilogx(*zip(*test), '-r', label='Vergleichskurve n = %i' % n)
                 plt.title('Vergleichskurve mit n = %i' % n)
